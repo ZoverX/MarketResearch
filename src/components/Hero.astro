@@ -1,0 +1,32 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  description: string;
+  stats?: Array<{ label: string; value: string }>;
+}
+
+const { eyebrow, title, description, stats = [] } = Astro.props;
+---
+<section class="hero">
+  <div class="shell">
+    <div class="hero-panel">
+      <div class="hero-grid">
+        <div>
+          <p class="eyebrow">{eyebrow}</p>
+          <h1>{title}</h1>
+          <p class="lede">{description}</p>
+          <slot name="actions" />
+        </div>
+        <div class="stats-grid">
+          {stats.map((stat) => (
+            <div class="metric">
+              <span class="metric-value">{stat.value}</span>
+              <span>{stat.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

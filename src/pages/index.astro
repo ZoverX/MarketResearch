@@ -1,0 +1,79 @@
+---
+import { getCollection } from "astro:content";
+import Hero from "../components/Hero.astro";
+import SectionCards from "../components/SectionCards.astro";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { collectionOrder, getEntryHref, withBase } from "../lib/content";
+
+const methodologies = collectionOrder(await getCollection("methodologies"));
+const featuredMethods = methodologies.filter((entry) => entry.data.featured).slice(0, 4);
+---
+<BaseLayout
+  title="Market Research Notes"
+  description="A practical knowledge site for market research methods, workflows, and analytics foundations."
+>
+  <Hero
+    eyebrow="Personal knowledge library"
+    title="Learn market research through structured notes, practical methods, and reusable workflows."
+    description="This site is designed as a publishable reference library: content-first pages, methodology templates, glossary support, and lightweight interactions that help you choose and explain the right method."
+    stats={[
+      { label: "Core sections", value: "8" },
+      { label: "Starter methods", value: String(methodologies.length) },
+      { label: "Glossary entries", value: "10+" },
+      { label: "Deployment target", value: "GitHub Pages" }
+    ]}
+  >
+    <div slot="actions" class="hero-actions">
+      <a class="button" href={withBase("/methodologies/")}>Explore methodologies</a>
+      <a class="button-secondary" href={withBase("/method-chooser/")}>Use the method chooser</a>
+    </div>
+  </Hero>
+
+  <SectionCards
+    heading="How to use this library"
+    intro="Start broad, then move into deeper methodology pages when you need design guidance, interpretation notes, or implementation reminders."
+    items={[
+      { href: withBase("/basics/"), title: "Build foundations", description: "Use the Basic Info section to get oriented on project flow, data types, and research design tradeoffs.", meta: "Best for onboarding and quick refreshers" },
+      { href: withBase("/methodologies/"), title: "Study methods", description: "Each method page follows a consistent structure so comparison is easy and content is reusable.", meta: "Includes strengths, limitations, outputs, and interpretation" },
+      { href: withBase("/displayr/"), title: "Operationalize analysis", description: "Keep workflow notes, cleaning steps, weighting setup, chart production, and reporting practices in one place.", meta: "Process-oriented reference" },
+      { href: withBase("/glossary/"), title: "Clarify terms", description: "Use the glossary to define recurring concepts and create reusable language for future pages.", meta: "Searchable and extendable" }
+    ]}
+  />
+
+  <section class="section">
+    <div class="shell">
+      <div class="section-head">
+        <div>
+          <h2>Featured methodology pages</h2>
+          <p>These starter pages are more developed in v1 and demonstrate the reusable methodology template.</p>
+        </div>
+      </div>
+      <div class="card-grid">
+        {featuredMethods.map((entry) => (
+          <article class="method-card">
+            <div>
+              <h3><a href={getEntryHref(entry)}>{entry.data.title}</a></h3>
+              <p>{entry.data.description}</p>
+            </div>
+            <ul class="tag-list">
+              {entry.data.tags.slice(0, 3).map((tag) => <li class="tag">{tag}</li>)}
+            </ul>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <SectionCards
+    heading="Main sections"
+    intro="The structure is designed for gradual expansion. New Markdown entries inherit the same layouts, metadata patterns, and linking model."
+    items={[
+      { href: withBase("/basics/"), title: "Basic Info", description: "Core concepts, project process, data types, and supplier landscape." },
+      { href: withBase("/methodologies/"), title: "Advanced Methodologies", description: "Conjoint, segmentation, pricing, text analytics, brand metrics, and more." },
+      { href: withBase("/displayr/"), title: "Displayr / Q", description: "Operational notes for analysis workflows and reporting." },
+      { href: withBase("/sawtooth/"), title: "Sawtooth", description: "Section shell for future workflow notes and methodology-specific setup." },
+      { href: withBase("/method-chooser/"), title: "Method Chooser", description: "Filter methods by stage, data, goal, and expected output." },
+      { href: withBase("/about/"), title: "About", description: "Context, audience, and maintenance approach for the site." }
+    ]}
+  />
+</BaseLayout>

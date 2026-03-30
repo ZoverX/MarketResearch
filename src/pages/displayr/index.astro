@@ -1,0 +1,21 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CollectionList from "../../components/CollectionList.astro";
+import { getOrderedCollection, getEntryHref } from "../../lib/content";
+
+const pages = await getOrderedCollection("displayr");
+---
+<BaseLayout title="Displayr / Q | Market Research Notes" description="Workflow notes for Displayr and Q.">
+  <section class="page-intro">
+    <div class="shell">
+      <p class="eyebrow">Displayr / Q</p>
+      <h1>Operational workflow notes</h1>
+      <p class="lede">Document practical steps for cleaning data, managing variables, running tables, checking significance, and producing client-ready outputs.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="shell">
+      <CollectionList items={pages.map((entry) => ({ href: getEntryHref(entry), title: entry.data.title, description: entry.data.description, tags: entry.data.tags }))} />
+    </div>
+  </section>
+</BaseLayout>

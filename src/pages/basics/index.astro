@@ -1,0 +1,21 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import CollectionList from "../../components/CollectionList.astro";
+import { getOrderedCollection, getEntryHref } from "../../lib/content";
+
+const basics = await getOrderedCollection("basics");
+---
+<BaseLayout title="Basic Info | Market Research Notes" description="Foundational market research concepts, project process, and data basics.">
+  <section class="page-intro">
+    <div class="shell">
+      <p class="eyebrow">Basic Info</p>
+      <h1>Foundations before methods</h1>
+      <p class="lede">Use these pages to ground the project lifecycle, data types, supplier landscape, and the qualitative versus quantitative split.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="shell">
+      <CollectionList items={basics.map((entry) => ({ href: getEntryHref(entry), title: entry.data.title, description: entry.data.description, tags: entry.data.tags }))} />
+    </div>
+  </section>
+</BaseLayout>

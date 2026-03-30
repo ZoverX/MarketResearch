@@ -1,0 +1,33 @@
+---
+import { withBase } from "../lib/content";
+
+const { pathname } = Astro.url;
+const links = [
+  { href: withBase("/"), label: "Home" },
+  { href: withBase("/basics/"), label: "Basic Info" },
+  { href: withBase("/methodologies/"), label: "Methodologies" },
+  { href: withBase("/displayr/"), label: "Displayr / Q" },
+  { href: withBase("/sawtooth/"), label: "Sawtooth" },
+  { href: withBase("/method-chooser/"), label: "Method Chooser" },
+  { href: withBase("/glossary/"), label: "Glossary" },
+  { href: withBase("/about/"), label: "About" }
+];
+---
+<nav class="main-nav" aria-label="Primary">
+  <button class="nav-toggle" type="button" data-nav-toggle aria-expanded="false" aria-controls="site-nav-links">Menu</button>
+  <div class="nav-links" id="site-nav-links" data-nav-links>
+    {links.map((link) => <a href={link.href} aria-current={pathname === link.href ? "page" : undefined}>{link.label}</a>)}
+  </div>
+</nav>
+
+<script is:inline>
+  const toggle = document.querySelector("[data-nav-toggle]");
+  const links = document.querySelector("[data-nav-links]");
+  if (toggle && links) {
+    toggle.addEventListener("click", () => {
+      const open = links.getAttribute("data-open") === "true";
+      links.setAttribute("data-open", String(!open));
+      toggle.setAttribute("aria-expanded", String(!open));
+    });
+  }
+</script>

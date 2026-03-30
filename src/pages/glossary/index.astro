@@ -1,0 +1,63 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getOrderedCollection, getEntryHref } from "../../lib/content";
+
+const entries = await getOrderedCollection("glossary");
+const categories = [...new Set(entries.map((entry) => entry.data.category))].sort();
+---
+<BaseLayout title="Glossary | Market Research Notes" description="Searchable glossary of market research and analytics terms.">
+  <section class="page-intro">
+    <div class="shell">
+      <p class="eyebrow">Glossary</p>
+      <h1>Shared language for repeatable explanations</h1>
+      <p class="lede">Use the glossary to define recurring concepts once, then link back to them from methods and workflow notes.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="shell">
+      <div class="filter-card">
+        <div class="filters">
+          <label><span class="helper">Search terms</span><input class="input" id="glossary-search" type="search" placeholder="Search by term or definition" /></label>
+          <label><span class="helper">Category</span><select class="select" id="glossary-category"><option value="">All categories</option>{categories.map((category) => <option value={category}>{category}</option>)}</select></label>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
+    <div class="shell">
+      <div id="glossary-grid" class="collection-grid">
+        {entries.map((entry) => (
+          <article class="glossary-card" data-glossary-card data-term={entry.data.term.toLowerCase()} data-definition={entry.data.shortDefinition.toLowerCase()} data-category={entry.data.category}>
+            <div>
+              <h3><a href={getEntryHref(entry)}>{entry.data.term}</a></h3>
+              <p>{entry.data.shortDefinition}</p>
+            </div>
+            <span class="tag">{entry.data.category}</span>
+          </article>
+        ))}
+      </div>
+      <p id="glossary-empty" class="empty-state" hidden>No glossary terms match that search.</p>
+    </div>
+  </section>
+  <script is:inline>
+    const search = document.getElementById("glossary-search");
+    const category = document.getElementById("glossary-category");
+    const cards = Array.from(document.querySelectorAll("[data-glossary-card]"));
+    const empty = document.getElementById("glossary-empty");
+    const updateGlossary = () => {
+      const term = search instanceof HTMLInputElement ? search.value.trim().toLowerCase() : "";
+      const selectedCategory = category instanceof HTMLSelectElement ? category.value : "";
+      let visibleCount = 0;
+      cards.forEach((card) => {
+        const searchable = `${card.dataset.term} ${card.dataset.definition}`;
+        const visible = (!term || searchable.includes(term)) && (!selectedCategory || card.dataset.category === selectedCategory);
+        card.hidden = !visible;
+        if (visible) visibleCount += 1;
+      });
+      if (empty) empty.hidden = visibleCount !== 0;
+    };
+    search?.addEventListener("input", updateGlossary);
+    category?.addEventListener("change", updateGlossary);
+    updateGlossary();
+  </script>
+</BaseLayout>

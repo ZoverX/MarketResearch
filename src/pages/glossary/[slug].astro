@@ -1,0 +1,31 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import RelatedLinks from "../../components/RelatedLinks.astro";
+import { collectionOrder, getEntryHref } from "../../lib/content";
+
+export async function getStaticPaths() {
+  const entries = collectionOrder(await getCollection("glossary"));
+  return entries.map((entry) => ({ params: { slug: entry.slug }, props: { entry, entries } }));
+}
+
+const { entry, entries } = Astro.props;
+const { Content } = await entry.render();
+const relatedEntries = entries.filter((item) => entry.data.related.includes(item.slug) && item.slug !== entry.slug);
+---
+<BaseLayout title={`${entry.data.term} | Glossary | Market Research Notes`} description={entry.data.description}>
+  <section class="page-intro">
+    <div class="shell">
+      <p class="eyebrow">Glossary</p>
+      <h1>{entry.data.term}</h1>
+      <p class="lede">{entry.data.shortDefinition}</p>
+      <span class="tag">{entry.data.category}</span>
+    </div>
+  </section>
+  <section class="section">
+    <div class="shell">
+      <article class="panel content-panel"><Content /></article>
+    </div>
+  </section>
+  <RelatedLinks items={relatedEntries.map((item) => ({ href: getEntryHref(item), title: item.data.term }))} />
+</BaseLayout>

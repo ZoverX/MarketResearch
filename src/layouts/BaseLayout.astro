@@ -1,0 +1,37 @@
+---
+import Footer from "../components/Footer.astro";
+import Nav from "../components/Nav.astro";
+import { withBase } from "../lib/content";
+import "../styles/global.css";
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "A practical, structured library of market research and analytics notes." } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 80 80'%3E%3Crect width='80' height='80' rx='18' fill='%2307111f'/%3E%3Cpath d='M18 57V23h8v26h10v8H18Zm22 0V23h8v12h14V23h8v34h-8V43H48v14h-8Z' fill='%237bdff2'/%3E%3C/svg%3E" />
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="shell header-inner">
+        <a class="brand" href={withBase("/")}>
+          <span class="brand-mark" aria-hidden="true">MR</span>
+          <span>Market Research Notes</span>
+        </a>
+        <Nav />
+      </div>
+    </header>
+    <main><slot /></main>
+    <Footer />
+  </body>
+</html>

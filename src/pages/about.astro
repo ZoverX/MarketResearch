@@ -1,0 +1,32 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+<BaseLayout title="About | Market Research Notes" description="About this market research knowledge site and how it is maintained.">
+  <section class="page-intro">
+    <div class="shell">
+      <p class="eyebrow">About</p>
+      <h1>Why this site exists</h1>
+      <p class="lede">This site is a structured library of market research and analytics knowledge. It is designed to be practical rather than encyclopedic: clear definitions, decision support, workflow notes, and examples that can grow over time.</p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="shell card-grid">
+      <article class="card"><h2>Audience</h2><p>People learning research design, analysts building repeatable workflows, and future-you needing a reliable reference point.</p></article>
+      <article class="card"><h2>Content model</h2><p>All long-form content is Markdown-backed, so new pages can be added without touching the shared layouts or routes.</p></article>
+      <article class="card"><h2>Publishing model</h2><p>The site is configured as a static Astro project that builds cleanly to GitHub Pages project-site output.</p></article>
+    </div>
+  </section>
+  <section class="section">
+    <div class="shell">
+      <div class="panel content-panel">
+        <h2>What to add next</h2>
+        <ul>
+          <li>Replace placeholder demo blocks with screenshots or small teaching interactions.</li>
+          <li>Expand the Sawtooth section when you have concrete setup notes to document.</li>
+          <li>Add more glossary entries as repeated terms appear in methodology pages.</li>
+          <li>Introduce a light theme later if it becomes a real user need.</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

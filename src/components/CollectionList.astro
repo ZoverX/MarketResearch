@@ -1,0 +1,31 @@
+---
+interface Item {
+  href: string;
+  title: string;
+  description: string;
+  tags?: string[];
+}
+
+interface Props {
+  items: Item[];
+}
+
+const { items } = Astro.props;
+---
+<div class="collection-grid">
+  {items.map((item) => (
+    <article class="article-card">
+      <div>
+        <h3><a href={item.href}>{item.title}</a></h3>
+        <p>{item.description}</p>
+      </div>
+      {item.tags && item.tags.length > 0 && (
+        <ul class="tag-list">
+          {item.tags.map((tag) => (
+            <li class="tag">{tag}</li>
+          ))}
+        </ul>
+      )}
+    </article>
+  ))}
+</div>

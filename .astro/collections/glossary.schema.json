@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "section": {
+      "default": "Glossary",
+      "type": "string"
+    },
+    "order": {
+      "default": 999,
+      "type": "number"
+    },
+    "tags": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "related": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "term": {
+      "type": "string"
+    },
+    "shortDefinition": {
+      "type": "string"
+    },
+    "category": {
+      "default": "General",
+      "type": "string"
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "title",
+    "description",
+    "term",
+    "shortDefinition"
+  ]
+}
