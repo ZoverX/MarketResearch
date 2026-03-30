@@ -9,9 +9,12 @@ export const getOrderedCollection = async <T extends CollectionName>(name: T) =>
   collectionOrder(await getCollection(name));
 
 export const withBase = (path: string) => {
-  const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+  const normalizedBase = import.meta.env.BASE_URL.endsWith("/")
+    ? import.meta.env.BASE_URL
+    : `${import.meta.env.BASE_URL}/`;
   const normalizedPath = path.replace(/^\/+/, "");
-  return normalizedPath ? `${base}${normalizedPath}` : base;
+  const resolved = new URL(normalizedPath || ".", `https://example.com${normalizedBase}`);
+  return resolved.pathname;
 };
 
 export const getEntryHref = (entry: CollectionEntry<CollectionName>) => {
