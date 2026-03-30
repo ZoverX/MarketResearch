@@ -11,8 +11,8 @@ An Astro-based static knowledge site for market research and analytics notes, de
 
 ## Local setup
 
-1. Install Node.js 20 or later.
-2. Run `npm install`.
+1. Install Node.js 24 or later.
+2. Run `npm ci`.
 3. Run `npm run dev`.
 4. Open the local Astro URL shown in the terminal.
 
@@ -43,7 +43,7 @@ An Astro-based static knowledge site for market research and analytics notes, de
 
 The workflow in `.github/workflows/static.yml`:
 
-1. Installs dependencies with `npm install`
+1. Installs dependencies with `npm ci`
 2. Builds the Astro site
 3. Passes the repository name into Astro so the `base` path matches a GitHub Pages project site
 4. Uploads `dist/` to GitHub Pages
