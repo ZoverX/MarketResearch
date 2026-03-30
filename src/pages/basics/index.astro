@@ -32,19 +32,22 @@ const basicPages = await Promise.all(
           <div class="basics-tab-list" role="tablist" aria-label="Basic Info topics">
             {
               basicPages.map(({ entry }, index) => (
-                <button
-                  class="basics-tab-button"
-                  type="button"
-                  role="tab"
-                  id={`basic-tab-${entry.slug}`}
-                  aria-controls={`basic-panel-${entry.slug}`}
-                  aria-selected={index === 0 ? "true" : "false"}
-                  tabindex={index === 0 ? "0" : "-1"}
-                  data-tab-button
-                  data-target={entry.slug}
-                >
-                  {entry.data.title}
-                </button>
+                <div class="basics-tab-item">
+                  <button
+                    class="basics-tab-button"
+                    type="button"
+                    role="tab"
+                    id={`basic-tab-${entry.slug}`}
+                    aria-controls={`basic-panel-${entry.slug}`}
+                    aria-selected={index === 0 ? "true" : "false"}
+                    tabindex={index === 0 ? "0" : "-1"}
+                    data-tab-button
+                    data-target={entry.slug}
+                  >
+                    {entry.data.title}
+                  </button>
+                  <a class="basics-tab-link" href={getEntryHref(entry)}>Open article</a>
+                </div>
               ))
             }
           </div>
