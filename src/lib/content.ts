@@ -8,7 +8,11 @@ export const collectionOrder = <T extends { data: { order: number; title: string
 export const getOrderedCollection = async <T extends CollectionName>(name: T) =>
   collectionOrder(await getCollection(name));
 
-export const withBase = (path: string) => `${import.meta.env.BASE_URL}${path.replace(/^\//, "")}`;
+export const withBase = (path: string) => {
+  const base = import.meta.env.BASE_URL.endsWith("/") ? import.meta.env.BASE_URL : `${import.meta.env.BASE_URL}/`;
+  const normalizedPath = path.replace(/^\/+/, "");
+  return normalizedPath ? `${base}${normalizedPath}` : base;
+};
 
 export const getEntryHref = (entry: CollectionEntry<CollectionName>) => {
   switch (entry.collection) {
