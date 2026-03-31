@@ -151,6 +151,10 @@ p, ul, ol { margin: 0 0 1rem; }
   background: rgba(2, 8, 15, 0.72);
   backdrop-filter: blur(10px);
 }
+.basics-modal-backdrop[hidden],
+.basics-modal-panel[hidden] {
+  display: none !important;
+}
 .basics-modal-panel {
   width: min(960px, calc(100vw - 2rem));
   max-height: min(88vh, 900px);

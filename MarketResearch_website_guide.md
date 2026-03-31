@@ -1,156 +1,135 @@
 # Market Research Website Guide
 
-## What this document is
+## What this guide is for
 
-This guide explains how your `MarketResearch` website repo works from the ground up.
+This document explains how the `MarketResearch` repo works and how to safely change it.
 
-It is written for a beginner. It assumes:
+It assumes you are a beginner.
 
-- you are new to web development
-- you may be new to GitHub
-- you may not know what Astro, Markdown, routing, or deployment mean
+It is written so you can understand:
 
-The goal is that after reading this guide, you should be able to:
-
-- understand how the site is structured
-- edit existing content
-- add new pages
-- add new methodology pages
-- change navigation
-- change styling
-- understand how the site gets published to GitHub Pages
-- make safe changes without guessing
+- what the repo is made of
+- how content becomes pages
+- how navigation and styling work
+- how to add or edit content
+- how to add new pages or sections
+- how to avoid the compatibility problems we already had to fix
 
 ---
 
 ## 1. What this website is
 
-This repo contains a static website.
+This project is a **static website** built with **Astro** and deployed to **GitHub Pages**.
 
 Static means:
 
-- pages are generated ahead of time
-- there is no server-side database
-- no backend code is required for the site to work
-- GitHub Pages can host it cheaply and simply
+- pages are built into HTML ahead of time
+- there is no backend server or database
+- GitHub Pages can host it directly
 
-Your site is built with **Astro**.
-
-Astro is a framework for building static websites using:
-
-- pages
-- layouts
-- components
-- Markdown content
-
-This is a good fit for your project because your website is mainly a structured knowledge library, not a web app with user accounts or complex live data.
+This is a good fit because your website is mainly a structured knowledge library.
 
 ---
 
-## 2. The main technologies used
+## 2. Main technologies and why they are used
 
 ### Astro
 
-Purpose:
+Astro is the framework that builds the site.
 
-- builds the website
-- turns your source files into finished HTML/CSS/JS
-- handles routes like `/basics/` and `/methodologies/`
+It is used for:
 
-Why it is used:
+- routing
+- layouts
+- reusable components
+- content collections
+- static site generation
 
-- good for content-heavy sites
+Why it was chosen:
+
+- strong for content-heavy websites
+- works well with Markdown
 - simple GitHub Pages deployment
-- supports Markdown well
-- lets you reuse layouts and components
+- avoids unnecessary frontend complexity
 
 ### Markdown
 
-Purpose:
+Markdown is used for most written content.
 
-- stores most written content in simple text files
-- easier to edit than raw HTML
+It is used in:
 
-Why it is used:
+- `src/content/basics/`
+- `src/content/methodologies/`
+- `src/content/displayr/`
+- `src/content/sawtooth/`
+- `src/content/glossary/`
 
+Why it was chosen:
+
+- easy to edit
 - beginner-friendly
-- clean for note-taking and documentation
-- fast to extend
+- clean for long-form educational content
 
-### Astro Content Collections
+### Astro content collections
 
-Purpose:
+Content collections are Astro’s way of grouping and validating Markdown entries.
 
-- organize Markdown content into groups such as `basics`, `methodologies`, `displayr`, `glossary`
-- validate the frontmatter fields you use
+They are used so:
 
-Why it is used:
+- content is structured
+- required fields are enforced
+- pages can be generated from content automatically
 
-- keeps content structured
-- prevents inconsistent fields
-- makes it easier to build reusable templates
+In this repo, collections include:
+
+- `basics`
+- `methodologies`
+- `displayr`
+- `sawtooth`
+- `glossary`
 
 ### Components
 
-Purpose:
+Components are reusable chunks of UI.
 
-- reusable pieces of UI like the navigation bar, hero section, footer, methodology section blocks
+Examples:
 
-Why it is used:
+- header
+- footer
+- hero section
+- methodology details block
+- collection card list
 
-- avoids repeating the same code everywhere
-- makes design changes easier
+Why they are used:
+
+- avoid repeating code
+- keep the site consistent
+- make future changes easier
 
 ### CSS
 
-Purpose:
+CSS controls:
 
-- controls colors, spacing, layout, typography, buttons, cards, responsiveness
-
-Why it is used:
-
-- this is how the visual design is built
+- colors
+- spacing
+- typography
+- layout
+- responsive behavior
+- interaction styling
 
 ### GitHub Actions
 
-Purpose:
-
-- automatically builds and deploys the site when you push to GitHub
-
-Why it is used:
-
-- removes manual deployment work
-- standard GitHub Pages flow
+GitHub Actions builds and deploys the site automatically whenever you push to `main`.
 
 ### GitHub Pages
 
-Purpose:
-
-- hosts the final website publicly
-
-Why it is used:
-
-- free and simple for static sites
+GitHub Pages hosts the finished built website online.
 
 ---
 
-## 3. High-level mental model
+## 3. Repo structure
 
-Think of the repo in five layers:
-
-1. Configuration
-2. Content
-3. Layout and reusable UI
-4. Pages and routes
-5. Deployment
-
-If you understand those five layers, the repo becomes much easier to manage.
-
----
-
-## 4. Folder structure and what each part does
-
-Your repo is:
+Repo location:
 
 `c:\Users\zihao\Desktop\MyRepo\MarketResearch`
 
@@ -158,49 +137,38 @@ Important files and folders:
 
 ### `package.json`
 
-Purpose:
+Defines:
 
-- lists project dependencies
-- defines commands like `npm run dev` and `npm run build`
-
-You use it when:
-
-- installing dependencies
-- running the site locally
-- building the site
+- dependencies
+- scripts like `npm run dev` and `npm run build`
 
 ### `package-lock.json`
 
-Purpose:
+Locks exact dependency versions.
 
-- locks exact dependency versions
-
-Why it matters:
-
-- keeps installs consistent
-- allows `npm ci` in GitHub Actions
+This is why the workflow can use `npm ci`.
 
 ### `astro.config.mjs`
 
-Purpose:
+Astro configuration.
 
-- Astro configuration
-- defines the site URL and the base path
+Important in this project because:
 
-Why it matters:
+- GitHub Pages project sites need a base path
+- this repo is hosted under `/MarketResearch/`
 
-- GitHub Pages project sites need the correct base path
-- your repo is deployed under `/MarketResearch/`, not `/`
+### `src/content.config.ts`
 
-### `src/`
+Defines the content collections.
 
-This is the main source folder.
+This file is especially important in Astro 6 because it uses explicit `glob()` loaders to tell Astro:
 
-Inside `src/`:
+- where each collection lives
+- what schema each collection uses
 
 ### `src/content/`
 
-This holds your written content.
+Holds Markdown content.
 
 Subfolders:
 
@@ -210,363 +178,366 @@ Subfolders:
 - `sawtooth/`
 - `glossary/`
 
-Each content folder contains Markdown files.
+### `src/pages/`
 
-### `src/content.config.ts`
+Defines routes.
 
-Purpose:
+Examples:
 
-- defines the structure rules for content collections
-- validates frontmatter fields
-
-Why it matters:
-
-- if you add a methodology page and forget a required field, Astro can detect that
-
-### `src/layouts/`
-
-Purpose:
-
-- contains layout wrappers shared across pages
-
-Main file:
-
-- `BaseLayout.astro`
-
-This handles:
-
-- page shell
-- header
-- footer
-- global styles
-- metadata like page title and description
+- `src/pages/index.astro` -> homepage
+- `src/pages/about.astro` -> `/about/`
+- `src/pages/basics/index.astro` -> `/basics/`
+- `src/pages/basics/[slug].astro` -> `/basics/<page>/`
 
 ### `src/components/`
 
-Purpose:
+Reusable UI pieces.
 
-- reusable visual building blocks
+### `src/layouts/`
 
-Examples:
+Shared page wrappers, especially:
 
-- `Nav.astro`
-- `Footer.astro`
-- `Hero.astro`
-- `SectionCards.astro`
-- `CollectionList.astro`
-- `MethodologySections.astro`
+- `BaseLayout.astro`
 
-These are used by pages to avoid repeating UI code.
+### `src/lib/`
 
-### `src/pages/`
+Shared utility logic.
 
-Purpose:
+Most importantly:
 
-- defines routes
+- `src/lib/content.ts`
 
-Examples:
+This file helps with:
 
-- `index.astro` becomes the homepage
-- `about.astro` becomes `/about/`
-- `method-chooser.astro` becomes `/method-chooser/`
-- `basics/index.astro` becomes `/basics/`
-- `basics/[slug].astro` creates dynamic basic content pages
+- route building
+- collection ordering
+- GitHub Pages base path handling
+- converting content entry ids into URLs
 
 ### `src/styles/global.css`
 
-Purpose:
-
-- global site styling
-
-This is where most colors, spacing, typography, cards, buttons, and responsive behavior are defined.
+The main stylesheet for the whole site.
 
 ### `.github/workflows/static.yml`
 
-Purpose:
-
-- GitHub Actions deployment workflow
-
-This:
-
-- installs dependencies
-- builds the Astro site
-- uploads the final `dist/` output
-- deploys to GitHub Pages
+The GitHub Actions deployment workflow.
 
 ### `public/`
 
-Purpose:
-
-- static assets that should be copied directly into the final site
-
-Examples you may add later:
-
-- images
-- PDFs
-- downloadable files
+For static assets like images and downloadable files.
 
 ---
 
-## 5. How Astro routing works in this repo
+## 4. How content becomes a webpage
 
-Routing means: how a file becomes a website URL.
+This is the most important concept in the repo.
+
+The flow is:
+
+1. You create a Markdown file in `src/content/...`
+2. Astro loads it through `src/content.config.ts`
+3. A page in `src/pages/...` reads that collection
+4. Astro generates HTML for it
+5. GitHub Pages serves the built page
+
+So content files do not appear on the site “by themselves”.
+They only appear when a page template uses them.
+
+---
+
+## 5. Astro 6 compatibility rules in this repo
+
+These matter because the repo originally used older content collection patterns.
+
+### Rule 1: collections use loaders
+
+In Astro 6, this repo uses `glob()` loaders in:
+
+- `src/content.config.ts`
+
+Example idea:
+
+- `methodologies` loads all Markdown from `src/content/methodologies`
+
+### Rule 2: entries use `id`, not `slug`
+
+With the loader-based setup, content entries are identified with `entry.id`.
+
+The repo normalizes that id into the final route path.
+
+Example:
+
+- file: `panel-providers.md`
+- id: `panel-providers.md`
+- final route path: `/basics/panel-providers/`
+
+### Rule 3: rendered content uses `render(entry)`
+
+In this repo, rendering content entries uses:
+
+```ts
+import { render } from "astro:content";
+const { Content } = await render(entry);
+```
+
+Do not assume the older `entry.render()` pattern still applies.
+
+---
+
+## 6. What frontmatter is
+
+At the top of each Markdown file you see a block like:
+
+```md
+---
+title: Panel providers
+description: A starter guide to what panel providers do and how to think about quality, fit, and risk.
+section: Basic Info
+order: 5
+tags: [Sampling, Suppliers]
+related: [standard-project-process, types-of-data-we-deal-with]
+summary: Frame panel suppliers as a sample-quality decision rather than a procurement detail.
+---
+```
+
+This is frontmatter.
+
+It controls metadata like:
+
+- title
+- description
+- order
+- tags
+- related pages
+
+The text below the frontmatter is the actual page content.
+
+### YAML warning
+
+Frontmatter uses YAML.
+
+If a value contains a `:` inside a sentence, quote it.
+
+Example:
+
+```md
+practicalUse: "This matters because pricing: design, analysis, and communication all depend on context."
+```
+
+If you forget this, Astro may fail to load the content file.
+
+---
+
+## 7. How routing works
 
 Examples:
 
 - `src/pages/index.astro` -> `/`
-- `src/pages/about.astro` -> `/about/`
 - `src/pages/methodologies/index.astro` -> `/methodologies/`
+- `src/pages/methodologies/[slug].astro` -> one page per methodology content entry
 
-Dynamic route example:
+In practice:
 
-- `src/pages/methodologies/[slug].astro`
+- `src/content/methodologies/conjoint.md`
+becomes
+- `/methodologies/conjoint/`
 
-This does not represent one single page.
-It represents many pages.
-
-Astro creates one page per Markdown file inside:
-
-- `src/content/methodologies/`
-
-If you create:
-
-- `src/content/methodologies/new-method.md`
-
-then Astro can generate:
-
-- `/methodologies/new-method/`
-
-This is why content collections are powerful.
-
-You add content files, and the site automatically gains pages.
-
----
-
-## 6. What a content collection is
-
-A content collection is a named group of content files.
-
-In your repo, collections include:
+The same pattern applies to:
 
 - `basics`
-- `methodologies`
 - `displayr`
 - `sawtooth`
 - `glossary`
 
-They are defined in:
-
-- `src/content.config.ts`
-
-That file says what fields each collection must have.
-
-For example, methodology entries require more structured fields than basic notes because methodology pages use a more detailed template.
-
 ---
 
-## 7. What frontmatter is
+## 8. How the homepage works
 
-At the top of each Markdown file, you see something like:
-
-```md
----
-title: Conjoint
-description: Estimate how people trade off product features, levels, and price when making choices.
-section: Advanced Methodologies
-order: 1
-tags: [Choice Modelling, Product, Pricing]
-related: [maxdiff, gabor-granger, van-westendorp]
----
-```
-
-This top block is called **frontmatter**.
-
-Purpose:
-
-- gives the page metadata
-- controls ordering
-- controls related links
-- controls tag displays
-- controls method chooser logic
-
-Think of frontmatter as the structured settings for the page.
-
-The body below the frontmatter is the actual written content.
-
----
-
-## 8. How methodology pages work
-
-Methodology pages are more structured than standard notes.
-
-Files live in:
-
-- `src/content/methodologies/`
-
-The page template is:
-
-- `src/pages/methodologies/[slug].astro`
-
-That page uses:
-
-- `src/components/MethodologySections.astro`
-
-Together, they render:
-
-- title
-- description
-- tags
-- “What it is”
-- overview notes
-- decision guide
-- strengths
-- limitations
-- common mistakes
-- Displayr notes
-- placeholder demo block
-
-This means:
-
-- the layout and structure are reusable
-- you mostly edit the Markdown file
-- you do not usually need to edit the page template just to add another methodology
-
----
-
-## 9. How the homepage works
-
-Homepage file:
+File:
 
 - `src/pages/index.astro`
 
-It does several things:
+It:
 
-- renders the hero section
-- shows “How to use this library”
-- pulls methodology content from the collection
+- renders the hero
+- pulls methodology entries from the collection
 - shows featured methods
-- links to major site sections
+- links to the major sections
 
-If you want to change homepage text, edit:
+If you want to change homepage wording, edit this file.
 
-- `src/pages/index.astro`
-
-If you want to change homepage styles, edit:
+If you want to change how it looks, edit:
 
 - `src/styles/global.css`
 
-If you want to change featured methods, edit the relevant methodology Markdown files and set:
+If you want to change which methods are featured, edit the relevant methodology Markdown files and change:
 
 `featured: true`
 
-or remove it.
-
 ---
 
-## 10. How navigation works
+## 9. How navigation works
 
-Navigation is in:
+File:
 
 - `src/components/Nav.astro`
 
-This controls the top menu:
+This defines the top navigation links.
 
-- Home
-- Basic Info
-- Methodologies
-- Displayr / Q
-- Sawtooth
-- Method Chooser
-- Glossary
-- About
-
-If you want to add a new top-level section:
-
-1. create the page or route
-2. add the new link in `Nav.astro`
-
-Do not hardcode links like `/my-page/` carelessly if the site is a GitHub Pages project site.
-This repo uses a helper called `withBase(...)` so links work under `/MarketResearch/`.
-
-That helper lives in:
+It uses the `withBase()` helper from:
 
 - `src/lib/content.ts`
 
+That helper is important because the site is hosted under:
+
+`https://zoverx.github.io/MarketResearch/`
+
+So links must work under the `/MarketResearch/` base path.
+
 ---
 
-## 11. How site styling works
+## 10. How the Basic Info section works
 
-Most styling is centralized in:
+Files involved:
+
+- `src/content/basics/*.md`
+- `src/pages/basics/index.astro`
+- `src/pages/basics/[slug].astro`
+- `src/styles/global.css`
+
+Current behavior:
+
+- `/basics/` shows an interactive card for each Basic Info topic
+- clicking a card opens the full topic content in a modal/popup
+- each card also has a direct article link
+- standalone pages still exist at routes like `/basics/panel-providers/`
+
+This means the same Markdown content can be accessed in two ways:
+
+1. inside the Basic Info overview experience
+2. on a dedicated standalone page
+
+If you want to change the interaction, edit:
+
+- `src/pages/basics/index.astro`
+- `src/styles/global.css`
+
+If you just want to change the topic content, edit the Markdown file in:
+
+- `src/content/basics/`
+
+---
+
+## 11. How methodology pages work
+
+Files involved:
+
+- `src/content/methodologies/*.md`
+- `src/pages/methodologies/index.astro`
+- `src/pages/methodologies/[slug].astro`
+- `src/components/MethodologySections.astro`
+
+Methodology pages are more structured than other sections.
+
+They use frontmatter fields such as:
+
+- `whatItIs`
+- `whenToUse`
+- `whenNotToUse`
+- `inputsRequired`
+- `typicalOutputs`
+- `strengths`
+- `limitations`
+- `commonMistakes`
+- `practicalUse`
+- `interpretation`
+- `clientCommunication`
+- `displayrNotes`
+
+The route page reads the frontmatter plus the Markdown body and renders them into the methodology template.
+
+---
+
+## 12. How Displayr, Sawtooth, and Glossary pages work
+
+These sections follow the same general pattern:
+
+- collection content in `src/content/...`
+- index page in `src/pages/.../index.astro`
+- detail page in `src/pages/.../[slug].astro`
+
+Glossary entries are smaller and schema-driven.
+
+The glossary index also includes search and category filtering.
+
+---
+
+## 13. How styling works
+
+Main stylesheet:
 
 - `src/styles/global.css`
 
-This includes:
+This file contains:
 
-- color variables
-- page widths
-- buttons
-- cards
-- hero layout
-- header
-- responsive design
+- design variables
+- layout rules
+- component styling
+- responsive behavior
+- modal styling for Basic Info
 
-If you want to change:
-
-- background color
-- accent color
-- card appearance
-- spacing
-- font sizing
-
-start there.
-
-Important idea:
-
-The top of the CSS file contains custom properties like:
-
-```css
-:root {
-  --bg: #07111f;
-  --text: #edf3fb;
-  --accent: #7bdff2;
-}
-```
-
-These are reusable design variables.
-
-Why this is good:
-
-- one change can update many places
-- the design stays consistent
-
----
-
-## 12. How interactivity works
-
-This site uses light JavaScript only where it helps:
-
-- method chooser filtering
-- glossary filtering
-- mobile menu toggle
-- methodology expand/collapse sections
+The top `:root` variables are the safest place to change the theme.
 
 Examples:
 
-- `src/pages/method-chooser.astro`
-- `src/pages/glossary/index.astro`
-- `src/components/Nav.astro`
-
-Why this is good:
-
-- keeps the site simple
-- keeps the build light
-- avoids unnecessary complexity
-
-You do not need React or a heavy frontend framework for this site.
+- `--bg`
+- `--surface`
+- `--text`
+- `--accent`
 
 ---
 
-## 13. How to run the site locally
+## 14. How interactivity works
+
+Current interactive features include:
+
+- mobile nav toggle
+- glossary filter/search
+- method chooser filter logic
+- methodology `<details>` expansion
+- Basic Info card modal interaction
+
+Most of this is implemented with small inline scripts in Astro pages/components.
+
+That keeps the site lightweight.
+
+---
+
+## 15. How deployment works
+
+Workflow file:
+
+- `.github/workflows/static.yml`
+
+Deployment process:
+
+1. push to `main`
+2. GitHub Actions runs
+3. dependencies install with `npm ci`
+4. Astro builds the site
+5. `dist/` is deployed to GitHub Pages
+
+The workflow is set up for:
+
+- Node 24
+- GitHub Pages project-site base path handling
+
+GitHub may still show warnings about some official actions being forced from Node 20 to Node 24.
+Those warnings are not the same as a failed build.
+
+---
+
+## 16. How to run the site locally
 
 In PowerShell:
 
@@ -576,553 +547,206 @@ npm ci
 npm run dev
 ```
 
-Astro will print a local URL, usually something like:
+The local URL will look like:
 
-`http://localhost:4321`
+`http://localhost:4321/MarketResearch/`
 
-Open that in your browser.
+Note the `/MarketResearch/` base path.
 
-To make a production build:
+To stop the dev server:
+
+```powershell
+Ctrl + C
+```
+
+To build locally:
 
 ```powershell
 npm run build
 ```
 
-To preview the production build:
-
-```powershell
-npm run preview
-```
-
 ---
 
-## 14. How deployment works
+## 17. How to edit existing content
 
-Deployment happens through:
+### Change a Basic Info topic
 
-- GitHub Actions
-- GitHub Pages
+Edit a file in:
 
-Workflow file:
-
-- `.github/workflows/static.yml`
-
-The process is:
-
-1. you push code to `main`
-2. GitHub Actions runs the workflow
-3. dependencies are installed
-4. Astro builds the site
-5. the built `dist/` files are deployed to GitHub Pages
-
-This means:
-
-- you do not upload website files manually
-- pushing to GitHub is the deployment step
-
----
-
-## 15. Why the base path matters
-
-Your site is hosted as a project site:
-
-`https://zoverx.github.io/MarketResearch/`
-
-Because of that, page URLs are not:
-
-- `/basics/`
-
-They are:
-
-- `/MarketResearch/basics/`
-
-That is why the repo uses base-path helpers.
-
-Relevant files:
-
-- `astro.config.mjs`
-- `src/lib/content.ts`
-
-If links ignore the base path, pages work on the homepage but fail on section links.
-
-This is a very common GitHub Pages issue.
-
----
-
-## 16. How to edit content that already exists
-
-### Edit a basic note
+- `src/content/basics/`
 
 Example:
 
-- `src/content/basics/what-is-market-research.md`
+- `src/content/basics/panel-providers.md`
 
-You can safely change:
+### Change a methodology
 
-- title
-- description
-- tags
-- body text
+Edit a file in:
 
-### Edit a Displayr note
-
-Example:
-
-- `src/content/displayr/reporting-workflow.md`
-
-Same principle: mostly edit the Markdown content.
-
-### Edit a glossary term
-
-Example:
-
-- `src/content/glossary/utility.md`
-
-You can change:
-
-- `term`
-- `shortDefinition`
-- category
-- body text
-
-### Edit a methodology page
+- `src/content/methodologies/`
 
 Example:
 
 - `src/content/methodologies/conjoint.md`
 
-You can change:
+### Change a glossary term
 
-- metadata
-- tags
-- related links
-- chooser fields
-- structured methodology fields
-- body notes
-
----
-
-## 17. How to add a new basic page
-
-Example goal:
-
-Add a new page about “Sampling error”.
-
-### Step 1
-
-Create a file:
-
-- `src/content/basics/sampling-error.md`
-
-### Step 2
-
-Add frontmatter:
-
-```md
----
-title: Sampling error
-description: A beginner-friendly explanation of sampling error in research.
-section: Basic Info
-order: 6
-tags: [Statistics, Foundations]
-related: [types-of-data-we-deal-with]
-summary: Explain what sampling error means and why it matters.
----
-```
-
-### Step 3
-
-Add body content below it:
-
-```md
-## What it means
-
-Sampling error is the difference between the survey estimate and the true population value caused by using a sample instead of a full census.
-
-## Why it matters
-
-It affects how much confidence you should place in small differences.
-```
-
-### Step 4
-
-Run:
-
-```powershell
-npm run dev
-```
-
-The new page should appear automatically in the Basic Info collection page.
-
-You do not need to manually create a route file for each basic content page because:
-
-- `src/pages/basics/[slug].astro` already handles that
-
----
-
-## 18. How to add a new methodology page
-
-This is one of the most important tasks in your site.
-
-### Step 1
-
-Create a new file in:
-
-- `src/content/methodologies/`
-
-For example:
-
-- `src/content/methodologies/latent-class.md`
-
-### Step 2
-
-Use the same structure as an existing methodology page.
-The easiest method is:
-
-1. copy a similar file
-2. rename it
-3. edit the values
-
-### Step 3
-
-Make sure you include all required fields.
-
-A simplified example:
-
-```md
----
-title: Latent class
-description: Segment respondents into classes based on response patterns.
-section: Advanced Methodologies
-order: 15
-tags: [Segmentation, Modelling]
-related: [segmentation, k-means]
-featured: false
-chooserStage: [Strategy]
-chooserGoal: [Audience design]
-chooserData: [Survey data]
-chooserOutput: [Classes, Profiles]
-whatItIs: Latent class analysis is a model-based approach for grouping respondents into classes with similar response patterns.
-whenToUse:
-  - When model-based grouping is preferred
-whenNotToUse:
-  - When the sample is too small for stable estimation
-inputsRequired:
-  - Suitable variables
-typicalOutputs:
-  - Class assignments
-simpleExample: Group respondents into hidden classes based on attitude agreement patterns.
-strengths:
-  - Model-based approach
-limitations:
-  - Can be harder to explain
-commonMistakes:
-  - Overfitting too many classes
-practicalUse: I use it when the project benefits from a probabilistic segmentation approach.
-outputted:
-  - Class probabilities
-interpretation:
-  - Compare class meaning and stability
-clientCommunication:
-  - Explain that classes are inferred, not directly observed
-displayrNotes:
-  - Keep class outputs clearly labeled
-demoType: placeholder
-demoTitle: Latent class output placeholder
-demoSummary: Add a chart or table screenshot later.
----
-
-## Notes
-
-Add practical notes here.
-```
-
-### Step 4
-
-Save the file and run the site locally.
-
-The page should automatically:
-
-- get its own URL
-- appear in the methodologies index page
-- work in related links
-- be usable in the method chooser if the chooser fields are filled
-
----
-
-## 19. How to add a new glossary term
-
-Create a file in:
+Edit a file in:
 
 - `src/content/glossary/`
 
-Example:
+### Change a Displayr or Sawtooth note
 
-- `src/content/glossary/margin-of-error.md`
+Edit a file in:
 
-Then add frontmatter like:
-
-```md
----
-title: Margin of error
-description: A glossary entry for margin of error.
-term: Margin of error
-shortDefinition: A statistical range around a survey estimate.
-category: Analytics
-order: 11
-tags: [Analytics]
-related: [significance]
----
-```
-
-Then write the explanation below.
-
-The glossary page will include it automatically.
+- `src/content/displayr/`
+- `src/content/sawtooth/`
 
 ---
 
-## 20. How to add a new top-level section
+## 18. How to add a new Basic Info page
 
-Example goal:
+1. Create a new Markdown file in:
+   - `src/content/basics/`
+2. Add frontmatter using an existing file as a template
+3. Add the body content
+4. Run `npm run dev`
 
-Add a section called `Case Studies`.
+Result:
 
-### Step 1
+- a new card appears on `/basics/`
+- clicking the card opens the modal with the full content
+- a new standalone route is created automatically
 
-Create a content folder if needed:
+Example route:
 
-- `src/content/case-studies/`
-
-### Step 2
-
-Update `src/content.config.ts`
-
-Add a new collection definition.
-
-### Step 3
-
-Create route files in `src/pages/case-studies/`
-
-Usually:
-
-- `index.astro`
-- `[slug].astro`
-
-### Step 4
-
-Add the link to:
-
-- `src/components/Nav.astro`
-
-### Step 5
-
-Add starter content files.
-
-This is a bigger change than adding a single page, but it follows the same architecture as the existing sections.
+- `src/content/basics/sampling-error.md`
+becomes
+- `/basics/sampling-error/`
 
 ---
 
-## 21. How to add images
+## 19. How to add a new methodology page
 
-If you want to add screenshots or diagrams:
+1. Create a file in:
+   - `src/content/methodologies/`
+2. Copy an existing methodology file
+3. Replace the content carefully
+4. Keep the required frontmatter fields
+5. Quote any plain text values that contain `:`
+6. Run `npm run dev`
 
-### Option 1: put images in `public/`
+Result:
 
-Example:
-
-- `public/images/conjoint-example.png`
-
-Then reference it in content or a component.
-
-Example path in HTML:
-
-`/images/conjoint-example.png`
-
-Astro will handle the site base path in the final build.
-
-### Option 2: use local imports in Astro components
-
-This is more advanced and not necessary for simple screenshots.
-
-For your use case, `public/images/` is usually the simpler option.
+- it appears on `/methodologies/`
+- a detail page is created automatically
+- it can appear in the method chooser if chooser fields are provided
 
 ---
 
-## 22. How to change colors or visual style
+## 20. How to add a new glossary term
 
-Start in:
+1. Create a file in:
+   - `src/content/glossary/`
+2. Add glossary frontmatter
+3. Write the definition
+4. Run the site locally
 
-- `src/styles/global.css`
+Result:
 
-Main variables are near the top.
-
-Examples:
-
-- `--bg`
-- `--text`
-- `--accent`
-- `--surface`
-
-If you want:
-
-- darker background
-- warmer accent color
-- lighter cards
-- different border style
-
-change those variables first before rewriting lots of CSS.
-
-That is the safest and fastest design-editing method.
+- it appears on the glossary index
+- it gets its own detail page
 
 ---
 
-## 23. How to add a new homepage section
+## 21. How to add a new top-level section
 
-Edit:
+This is a larger change.
 
-- `src/pages/index.astro`
+General process:
 
-Look at how existing blocks are built.
-
-Examples:
-
-- hero area
-- “How to use this library”
-- featured methodologies
-- main sections
-
-You can add:
-
-- featured glossary terms
-- latest added methodologies
-- a “Start here” guide
-- a “Tools I use” section
-
-If the new block is reusable, it is better to create a component in:
-
-- `src/components/`
-
-If it is homepage-only, it is fine to keep it in `index.astro`.
+1. create a new content folder under `src/content/`
+2. add a new collection to `src/content.config.ts`
+3. create a matching route folder under `src/pages/`
+4. create:
+   - `index.astro`
+   - `[slug].astro`
+5. add a navigation link in `src/components/Nav.astro`
+6. add starter content
 
 ---
 
-## 24. How to change the method chooser
+## 22. How to add images
 
-File:
+Put static assets in:
 
-- `src/pages/method-chooser.astro`
+- `public/images/`
 
-This page:
+Then reference them from pages/components/content.
 
-- reads all methodology entries
-- collects their chooser metadata
-- builds filters
-- filters visible cards with JavaScript
-
-If you want the chooser to recommend methods better, the first thing to improve is usually not the page logic.
-It is the metadata in the methodology Markdown files:
-
-- `chooserStage`
-- `chooserGoal`
-- `chooserData`
-- `chooserOutput`
-
-Improve the content first, then improve the page logic only if needed.
+For this repo, `public/images/` is the simplest image strategy.
 
 ---
 
-## 25. How to change the glossary filtering
+## 23. Safe workflow for making changes
 
-File:
+### Content changes
 
-- `src/pages/glossary/index.astro`
-
-This page:
-
-- reads glossary entries
-- builds the category list
-- lets the user search and filter entries
-
-If you want to improve glossary usefulness, usually add:
-
-- more terms
-- better short definitions
-- more useful category choices
-
----
-
-## 26. How related links work
-
-Many content files have:
-
-```md
-related: [maxdiff, gabor-granger, van-westendorp]
-```
-
-These values are slugs of related entries.
-
-Purpose:
-
-- create connections across the site
-- help users continue reading
-
-When you add a new page, it is good practice to add a few related slugs where they make sense.
-
-This improves the educational flow of the site.
-
----
-
-## 27. Safe workflow for making changes
-
-Use this process each time:
-
-### For content-only changes
-
-1. edit Markdown files
+1. edit Markdown
 2. run `npm run dev`
 3. check the affected page
 4. commit and push
 
-### For layout or style changes
+### UI or styling changes
 
-1. edit Astro or CSS files
+1. edit Astro/CSS
 2. run `npm run dev`
 3. test multiple pages
-4. test mobile width by resizing the browser
+4. test mobile size
 5. commit and push
 
-### For deployment-related changes
+### Config or deployment changes
 
-1. edit workflow or config carefully
-2. run `npm run build`
+1. edit config carefully
+2. run local validation if possible
 3. commit and push
 4. inspect the GitHub Actions run
 
 ---
 
-## 28. Common mistakes to avoid
+## 24. Common mistakes to avoid
 
-### Mistake 1: editing the wrong file type
+### Mistake 1: editing structure when you only need content edits
 
-If you only want to change written content, do not start by editing Astro layout files.
-Usually the right file is a Markdown file in `src/content/`.
+If you only want to change words, usually edit Markdown in `src/content/`.
 
-### Mistake 2: forgetting required frontmatter fields
+### Mistake 2: invalid frontmatter YAML
 
-Methodology pages need many fields.
-Copy an existing methodology file first.
+Examples of common problems:
 
-### Mistake 3: hardcoding routes incorrectly
+- missing `---`
+- bad indentation
+- using `:` inside unquoted values
 
-For GitHub Pages project sites, do not casually write raw root links everywhere.
-Use the repo’s route helpers where the code already uses them.
+### Mistake 3: assuming older Astro content APIs still apply
 
-### Mistake 4: changing structure when only content needed changing
+In this repo:
 
-A lot of updates should be content-only.
-Do not redesign the architecture unless you actually need to.
+- routes are based on `entry.id`
+- rendered content uses `render(entry)`
 
-### Mistake 5: forgetting to preview locally
+Do not revert back to older `entry.slug` / `entry.render()` assumptions.
+
+### Mistake 4: forgetting GitHub Pages base path rules
+
+This site is not hosted at `/`.
+It is hosted at:
+
+- `/MarketResearch/`
+
+So route helpers must be used consistently.
+
+### Mistake 5: not testing locally after changes
 
 Always run:
 
@@ -1134,237 +758,89 @@ before pushing.
 
 ---
 
-## 29. Beginner glossary for web development terms
+## 25. If something breaks
 
-### Route
+Ask these questions:
 
-A URL path like `/about/` or `/methodologies/conjoint/`
+### Are collections loading?
 
-### Component
+Check:
 
-A reusable piece of UI code
+- `src/content.config.ts`
+- whether the loader points to the correct folder
+- whether the content file has valid frontmatter
 
-### Layout
+### Is one content file broken?
 
-A wrapper structure shared by many pages
+Check:
 
-### Static site
+- YAML syntax
+- required frontmatter fields
+- quote values containing `:`
 
-A site where pages are prebuilt into files
-
-### Frontmatter
-
-Structured metadata at the top of a Markdown file
-
-### Collection
-
-A group of related content files
-
-### Build
-
-The process of converting source files into the final deployable website
-
-### Deploy
-
-Publishing the built website online
-
----
-
-## 30. Exact beginner tasks and where to make them
-
-### Task: change homepage text
-
-Edit:
-
-- `src/pages/index.astro`
-
-### Task: change nav menu labels
-
-Edit:
-
-- `src/components/Nav.astro`
-
-### Task: add a new basic educational page
-
-Create:
-
-- `src/content/basics/your-page.md`
-
-### Task: add a new methodology
-
-Create:
-
-- `src/content/methodologies/your-method.md`
-
-### Task: add a new glossary term
-
-Create:
-
-- `src/content/glossary/your-term.md`
-
-### Task: change the site colors
-
-Edit:
-
-- `src/styles/global.css`
-
-### Task: add an image
-
-Add file to:
-
-- `public/images/`
-
-### Task: change GitHub deployment behavior
-
-Edit:
-
-- `.github/workflows/static.yml`
-
-### Task: change page shell/header/footer
-
-Edit:
-
-- `src/layouts/BaseLayout.astro`
-- `src/components/Nav.astro`
-- `src/components/Footer.astro`
-
----
-
-## 31. Recommended learning path for you
-
-Do not try to learn everything at once.
-
-Learn in this order:
-
-1. how to run the site locally
-2. how to edit Markdown content
-3. how routing maps files to URLs
-4. how components are reused
-5. how CSS variables control design
-6. how deployment works through GitHub Actions
-7. how to add new collections or new site sections
-
-This order matches the complexity of the repo.
-
----
-
-## 32. Best practice for this repo
-
-For this project, the best habit is:
-
-- keep content in Markdown
-- keep structure in Astro
-- keep design in global CSS
-- keep route logic centralized
-- avoid unnecessary dependencies
-
-This repo is strongest when it stays simple, structured, and easy to extend.
-
----
-
-## 33. Example update workflow from start to finish
-
-Example: add a new methodology page.
-
-### Step 1
-
-Create:
-
-- `src/content/methodologies/brand-architecture.md`
-
-### Step 2
-
-Copy an existing methodology file and edit the values.
-
-### Step 3
-
-Run:
-
-```powershell
-cd c:\Users\zihao\Desktop\MyRepo\MarketResearch
-npm run dev
-```
-
-### Step 4
-
-Open the site locally and test:
-
-- methodologies index page
-- the new method page
-- related links
-- method chooser behavior
-
-### Step 5
-
-Commit and push:
-
-```powershell
-git add .
-git commit -m "Add brand architecture methodology page"
-git push origin main
-```
-
-### Step 6
-
-Watch GitHub Actions deploy the site.
-
----
-
-## 34. If something breaks
-
-If the site breaks, narrow it down by asking:
-
-### Is it content only?
-
-Check Markdown frontmatter for missing or incorrect fields.
-
-### Is it layout only?
-
-Check the Astro component or layout you edited.
-
-### Is it all routes?
+### Are routes broken?
 
 Check:
 
 - `astro.config.mjs`
 - `src/lib/content.ts`
+- the relevant `[slug].astro` route page
 
-### Is deployment failing?
+### Is deployment broken?
 
 Check:
 
 - `.github/workflows/static.yml`
 - GitHub Actions logs
 
-### Is only one page broken?
+### Is only Basic Info visually broken?
 
-Check the matching content file and route template.
+Check:
+
+- `src/pages/basics/index.astro`
+- `src/styles/global.css`
 
 ---
 
-## 35. Final summary
+## 26. Most common files you will edit
 
-The most important idea in this repo is this:
+### Content
 
-- content lives in Markdown
-- structure lives in Astro
-- design lives in CSS
-- deployment lives in GitHub Actions
+- `src/content/basics/*.md`
+- `src/content/methodologies/*.md`
+- `src/content/displayr/*.md`
+- `src/content/glossary/*.md`
 
-If you keep that mental model, the project stays understandable.
+### Layout/structure
 
-For most future updates, you will only need one of these actions:
+- `src/pages/index.astro`
+- `src/pages/basics/index.astro`
+- `src/components/Nav.astro`
+- `src/layouts/BaseLayout.astro`
 
-- edit a Markdown file
-- edit `index.astro`
-- edit `Nav.astro`
-- edit `global.css`
+### Styling
 
-Only occasionally will you need to change deeper architecture files like:
+- `src/styles/global.css`
+
+### Config
 
 - `src/content.config.ts`
 - `src/lib/content.ts`
 - `astro.config.mjs`
 - `.github/workflows/static.yml`
 
-That separation is what makes the repo maintainable.
+---
+
+## 27. Final mental model
+
+For this repo:
+
+- content lives in Markdown
+- content loading rules live in `src/content.config.ts`
+- route generation lives in `src/pages/` and `src/lib/content.ts`
+- shared UI lives in `src/components/`
+- overall page shell lives in `src/layouts/`
+- design lives in `src/styles/global.css`
+- deployment lives in `.github/workflows/static.yml`
+
+If you remember that split, the project stays understandable and maintainable.

@@ -19,7 +19,7 @@ simpleExample: Group category users based on needs, attitudes, and buying behavi
 strengths: [Helps teams move beyond averages, Supports targeting and communication strategy, Can integrate needs behaviors and attitudes]
 limitations: [Segment stories can become overfitted or over-romanticized, Results are sensitive to variable selection and preprocessing, Actionability can fail if the business cannot use the segments]
 commonMistakes: [Using every available variable instead of the right variables, Naming segments too early, Ignoring stability checks and practical usability]
-practicalUse: I use segmentation when the client needs a strategic framework that can survive beyond one debrief. The process matters as much as the final clusters: variable selection, standardization, and profiling determine whether the output is actually usable.
+practicalUse: "I use segmentation when the client needs a strategic framework that can survive beyond one debrief. The process matters as much as the final clusters: variable selection, standardization, and profiling determine whether the output is actually usable."
 outputted: [Segment IDs, Summary profiles and comparisons, Guidance on who each segment is and how to act on it]
 interpretation: [Start with separation quality and business meaning before naming clusters, Use profiling variables to explain the segments not to create them after the fact, Check that each segment can support an action]
 clientCommunication: [Explain how segments were built and what variables drove the solution, Avoid treating segments as immutable truths, Anchor recommendations in activation targeting or product implications]

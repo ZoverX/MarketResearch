@@ -1,12 +1,13 @@
 ---
+import { render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { getOrderedCollection, getEntryHref } from "../../lib/content";
+import { getOrderedCollection, getEntryHref, getEntryId } from "../../lib/content";
 
 const basics = await getOrderedCollection("basics");
 const basicPages = await Promise.all(
   basics.map(async (entry) => ({
     entry,
-    rendered: await entry.render()
+    rendered: await render(entry)
   }))
 );
 ---
@@ -37,9 +38,9 @@ const basicPages = await Promise.all(
                     class="basics-topic-button"
                     type="button"
                     aria-haspopup="dialog"
-                    aria-controls={`basic-modal-${entry.slug}`}
+                    aria-controls={`basic-modal-${getEntryId(entry)}`}
                     data-modal-trigger
-                    data-target={entry.slug}
+                    data-target={getEntryId(entry)}
                   >
                     <span class="eyebrow">{entry.data.section}</span>
                     <h3>{entry.data.title}</h3>
@@ -65,16 +66,16 @@ const basicPages = await Promise.all(
                     class="content-panel basics-modal-panel"
                     role="dialog"
                     aria-modal="true"
-                    aria-labelledby={`basic-modal-title-${entry.slug}`}
-                    id={`basic-modal-${entry.slug}`}
+                    aria-labelledby={`basic-modal-title-${getEntryId(entry)}`}
+                    id={`basic-modal-${getEntryId(entry)}`}
                     hidden
                     data-modal-panel
-                    data-panel={entry.slug}
+                    data-panel={getEntryId(entry)}
                   >
                     <div class="basics-modal-toolbar">
                       <div class="basics-panel-meta">
                         <p class="eyebrow">{entry.data.section}</p>
-                        <h2 id={`basic-modal-title-${entry.slug}`}>{entry.data.title}</h2>
+                        <h2 id={`basic-modal-title-${getEntryId(entry)}`}>{entry.data.title}</h2>
                         <p class="lede">{entry.data.description}</p>
                         <ul class="tag-list">
                           {entry.data.tags.map((tag) => (
@@ -151,6 +152,8 @@ const basicPages = await Promise.all(
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape" && backdrop && !backdrop.hidden) closeModal();
       });
+
+      closeModal();
     });
   </script>
 </BaseLayout>

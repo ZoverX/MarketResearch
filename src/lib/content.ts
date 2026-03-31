@@ -17,18 +17,21 @@ export const withBase = (path: string) => {
   return resolved.pathname;
 };
 
+export const getEntryId = (entry: CollectionEntry<CollectionName>) => entry.id.replace(/\.md$/, "");
+
 export const getEntryHref = (entry: CollectionEntry<CollectionName>) => {
+  const id = getEntryId(entry);
   switch (entry.collection) {
     case "basics":
-      return withBase(`/basics/${entry.slug}/`);
+      return withBase(`/basics/${id}/`);
     case "methodologies":
-      return withBase(`/methodologies/${entry.slug}/`);
+      return withBase(`/methodologies/${id}/`);
     case "displayr":
-      return withBase(`/displayr/${entry.slug}/`);
+      return withBase(`/displayr/${id}/`);
     case "sawtooth":
-      return withBase(`/sawtooth/${entry.slug}/`);
+      return withBase(`/sawtooth/${id}/`);
     case "glossary":
-      return withBase(`/glossary/${entry.slug}/`);
+      return withBase(`/glossary/${id}/`);
     default:
       return withBase("/");
   }

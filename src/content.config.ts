@@ -1,4 +1,5 @@
 import { defineCollection, z } from "astro:content";
+import { glob } from "astro/loaders";
 
 const baseSchema = z.object({
   title: z.string(),
@@ -10,7 +11,7 @@ const baseSchema = z.object({
 });
 
 const methodologyCollection = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/*.md", base: "./src/content/methodologies" }),
   schema: baseSchema.extend({
     featured: z.boolean().default(false),
     chooserStage: z.array(z.string()).default([]),
@@ -38,14 +39,14 @@ const methodologyCollection = defineCollection({
 });
 
 const notesCollection = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/*.md", base: "./src/content/basics" }),
   schema: baseSchema.extend({
     summary: z.string().optional()
   })
 });
 
 const glossaryCollection = defineCollection({
-  type: "content",
+  loader: glob({ pattern: "**/*.md", base: "./src/content/glossary" }),
   schema: z.object({
     title: z.string(),
     description: z.string(),
@@ -62,7 +63,17 @@ const glossaryCollection = defineCollection({
 export const collections = {
   basics: notesCollection,
   methodologies: methodologyCollection,
-  displayr: notesCollection,
-  sawtooth: notesCollection,
+  displayr: defineCollection({
+    loader: glob({ pattern: "**/*.md", base: "./src/content/displayr" }),
+    schema: baseSchema.extend({
+      summary: z.string().optional()
+    })
+  }),
+  sawtooth: defineCollection({
+    loader: glob({ pattern: "**/*.md", base: "./src/content/sawtooth" }),
+    schema: baseSchema.extend({
+      summary: z.string().optional()
+    })
+  }),
   glossary: glossaryCollection
 };

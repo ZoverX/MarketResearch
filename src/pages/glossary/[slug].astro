@@ -1,17 +1,17 @@
 ---
-import { getCollection } from "astro:content";
+import { getCollection, render } from "astro:content";
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import RelatedLinks from "../../components/RelatedLinks.astro";
-import { collectionOrder, getEntryHref } from "../../lib/content";
+import { collectionOrder, getEntryHref, getEntryId } from "../../lib/content";
 
 export async function getStaticPaths() {
   const entries = collectionOrder(await getCollection("glossary"));
-  return entries.map((entry) => ({ params: { slug: entry.slug }, props: { entry, entries } }));
+  return entries.map((entry) => ({ params: { slug: getEntryId(entry) }, props: { entry, entries } }));
 }
 
 const { entry, entries } = Astro.props;
-const { Content } = await entry.render();
-const relatedEntries = entries.filter((item) => entry.data.related.includes(item.slug) && item.slug !== entry.slug);
+const { Content } = await render(entry);
+const relatedEntries = entries.filter((item) => entry.data.related.includes(getEntryId(item)) && item.id !== entry.id);
 ---
 <BaseLayout title={`${entry.data.term} | Glossary | Market Research Notes`} description={entry.data.description}>
   <section class="page-intro">
