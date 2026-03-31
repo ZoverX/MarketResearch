@@ -24,64 +24,76 @@ const basicPages = await Promise.all(
         <div class="basics-tabs-head">
           <div>
             <h2>Basic Info topics</h2>
-            <p class="helper">Select a tab to read the topic in place, or use the dedicated page link if you want the standalone article view.</p>
+            <p class="helper">Choose a topic card to open the full content in a popup, or use the direct article link if you want the standalone page.</p>
           </div>
         </div>
 
-        <div class="basics-tabs" data-basics-tabs>
-          <div class="basics-tab-list" role="tablist" aria-label="Basic Info topics">
+        <div class="basics-cards-grid" data-basics-modal-root>
+          <div class="collection-grid">
             {
-              basicPages.map(({ entry }, index) => (
-                <div class="basics-tab-item">
+              basicPages.map(({ entry }) => (
+                <article class="article-card basics-topic-card">
                   <button
-                    class="basics-tab-button"
+                    class="basics-topic-button"
                     type="button"
-                    role="tab"
-                    id={`basic-tab-${entry.slug}`}
-                    aria-controls={`basic-panel-${entry.slug}`}
-                    aria-selected={index === 0 ? "true" : "false"}
-                    tabindex={index === 0 ? "0" : "-1"}
-                    data-tab-button
+                    aria-haspopup="dialog"
+                    aria-controls={`basic-modal-${entry.slug}`}
+                    data-modal-trigger
                     data-target={entry.slug}
                   >
-                    {entry.data.title}
+                    <span class="eyebrow">{entry.data.section}</span>
+                    <h3>{entry.data.title}</h3>
+                    <p>{entry.data.description}</p>
+                    <ul class="tag-list">
+                      {entry.data.tags.map((tag) => (
+                        <li class="tag">{tag}</li>
+                      ))}
+                    </ul>
                   </button>
                   <a class="basics-tab-link" href={getEntryHref(entry)}>Open article</a>
-                </div>
+                </article>
               ))
             }
           </div>
 
-          <div class="basics-tab-panels">
+          <div class="basics-modal-backdrop" data-modal-backdrop hidden>
             {
-              basicPages.map(({ entry, rendered }, index) => {
+              basicPages.map(({ entry, rendered }) => {
                 const { Content } = rendered;
                 return (
                   <article
-                    class="content-panel basics-tab-panel"
-                    role="tabpanel"
-                    id={`basic-panel-${entry.slug}`}
-                    aria-labelledby={`basic-tab-${entry.slug}`}
-                    hidden={index !== 0}
-                    data-tab-panel
+                    class="content-panel basics-modal-panel"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby={`basic-modal-title-${entry.slug}`}
+                    id={`basic-modal-${entry.slug}`}
+                    hidden
+                    data-modal-panel
                     data-panel={entry.slug}
                   >
-                    <div class="basics-panel-meta">
-                      <p class="eyebrow">{entry.data.section}</p>
-                      <h2>{entry.data.title}</h2>
-                      <p class="lede">{entry.data.description}</p>
-                      <ul class="tag-list">
-                        {entry.data.tags.map((tag) => (
-                          <li class="tag">{tag}</li>
-                        ))}
-                      </ul>
-                      <p class="helper">
-                        Standalone page:
-                        {" "}
-                        <a href={getEntryHref(entry)}>open article</a>
-                      </p>
+                    <div class="basics-modal-toolbar">
+                      <div class="basics-panel-meta">
+                        <p class="eyebrow">{entry.data.section}</p>
+                        <h2 id={`basic-modal-title-${entry.slug}`}>{entry.data.title}</h2>
+                        <p class="lede">{entry.data.description}</p>
+                        <ul class="tag-list">
+                          {entry.data.tags.map((tag) => (
+                            <li class="tag">{tag}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <button class="basics-modal-close" type="button" data-modal-close aria-label="Close topic">
+                        Close
+                      </button>
                     </div>
-                    <Content />
+                    <div class="basics-modal-content">
+                      <Content />
+                    </div>
+                    <p class="helper">
+                      Standalone page:
+                      {" "}
+                      <a href={getEntryHref(entry)}>open article</a>
+                    </p>
                   </article>
                 );
               })
@@ -93,39 +105,52 @@ const basicPages = await Promise.all(
   </section>
 
   <script is:inline>
-    const tabContainers = document.querySelectorAll("[data-basics-tabs]");
+    const modalRoots = document.querySelectorAll("[data-basics-modal-root]");
 
-    tabContainers.forEach((container) => {
-      const buttons = Array.from(container.querySelectorAll("[data-tab-button]"));
-      const panels = Array.from(container.querySelectorAll("[data-tab-panel]"));
+    modalRoots.forEach((root) => {
+      const triggers = Array.from(root.querySelectorAll("[data-modal-trigger]"));
+      const panels = Array.from(root.querySelectorAll("[data-modal-panel]"));
+      const closeButtons = Array.from(root.querySelectorAll("[data-modal-close]"));
+      const backdrop = root.querySelector("[data-modal-backdrop]");
+      let activeTrigger = null;
 
-      const activateTab = (target) => {
-        buttons.forEach((button) => {
-          const active = button.dataset.target === target;
-          button.setAttribute("aria-selected", String(active));
-          button.setAttribute("tabindex", active ? "0" : "-1");
-          button.classList.toggle("is-active", active);
+      const closeModal = () => {
+        panels.forEach((panel) => {
+          panel.hidden = true;
         });
+        if (backdrop) {
+          backdrop.hidden = true;
+          document.body.classList.remove("modal-open");
+        }
+        if (activeTrigger) activeTrigger.focus();
+      };
 
+      const openModal = (target, trigger) => {
         panels.forEach((panel) => {
           panel.hidden = panel.dataset.panel !== target;
         });
+        if (backdrop) {
+          backdrop.hidden = false;
+          document.body.classList.add("modal-open");
+        }
+        activeTrigger = trigger;
       };
 
-      buttons.forEach((button, index) => {
-        button.addEventListener("click", () => activateTab(button.dataset.target));
-        button.addEventListener("keydown", (event) => {
-          if (event.key !== "ArrowRight" && event.key !== "ArrowLeft") return;
-          event.preventDefault();
-          const delta = event.key === "ArrowRight" ? 1 : -1;
-          const nextIndex = (index + delta + buttons.length) % buttons.length;
-          buttons[nextIndex].focus();
-          activateTab(buttons[nextIndex].dataset.target);
-        });
+      triggers.forEach((trigger) => {
+        trigger.addEventListener("click", () => openModal(trigger.dataset.target, trigger));
       });
 
-      const initial = buttons.find((button) => button.getAttribute("aria-selected") === "true");
-      if (initial) activateTab(initial.dataset.target);
+      closeButtons.forEach((button) => {
+        button.addEventListener("click", closeModal);
+      });
+
+      backdrop?.addEventListener("click", (event) => {
+        if (event.target === backdrop) closeModal();
+      });
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && backdrop && !backdrop.hidden) closeModal();
+      });
     });
   </script>
 </BaseLayout>
